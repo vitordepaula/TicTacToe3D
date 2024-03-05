@@ -32,98 +32,51 @@ class TicTacToe3D {
 
     public int CheckWinner()
     {
-        // Check rows, columns, diagonals in all 3 dimensions (x, y, z)
-        for (int i = 0; i < board.GetLength(0); i++)
-        {
-            if (IsWinner(i, 0, 0) || IsWinner(0, i, 0) || IsWinner(0, 0, i))
-            {
-                return board[i, 0, 0];
-            }
-        }
-
-        // Check diagonals across all dimensions
-        if (IsWinner(0, 0, 0) || IsWinner(board.GetLength(0) - 1, 0, 0) ||
-            IsWinner(0, 0, board.GetLength(2) - 1) || IsWinner(0, board.GetLength(1) - 1, 0) ||
-            IsWinner(board.GetLength(0) - 1, board.GetLength(1) - 1, 0) ||
-            IsWinner(board.GetLength(0) - 1, 0, board.GetLength(2) - 1) ||
-            IsWinner(0, board.GetLength(1) - 1, board.GetLength(2) - 1) ||
-            IsWinner(board.GetLength(0) - 1, board.GetLength(1) - 1, board.GetLength(2) - 1))
-        {
-            return board[0, 0, 0];
-        }
-
-        // Check for tie
-        if (IsBoardFull())
-        {
-            return 0; // Tie
-        }
-
-        return -1; // No winner yet
-    }
-
-    private bool IsWinner(int x, int y, int z)
-    {
-        int value = board[x, y, z];
-        if (value == 0)
-        {
-            return false;
-        }
-
-        // Check all directions in 3 dimensions
-        for (int dx = -1; dx <= 1; dx++)
-        {
-            for (int dy = -1; dy <= 1; dy++)
-            {
-                for (int dz = -1; dz <= 1; dz++)
-                {
-                    if (dx == 0 && dy == 0 && dz == 0)
-                    {
-                        continue; // Skip the current cell
-                    }
-
-                    int count = 0;
-                    for (int i = 0; i < board.GetLength(0); i++)
-                    {
-                        int nx = x + i * dx;
-                        int ny = y + i * dy;
-                        int nz = z + i * dz;
-
-                        if (nx >= 0 && nx < board.GetLength(0) &&
-                            ny >= 0 && ny < board.GetLength(1) &&
-                            nz >= 0 && nz < board.GetLength(2) &&
-                            board[nx, ny, nz] == value)
-                        {
-                            count++;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    if (count >= 4)
-                    {
-                        return true;
-                    }
+        // Check all cells for winning situation (this is an overkill, but no problem, board is small
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 4; k++) {
+                    if (IsWinner(i, j, k)) { return board[i, j, k]; }
                 }
             }
         }
+        // Check for tie
+        if (IsBoardFull()) { return 0; }
+        // No winner yet
+        return -1;
+    }
 
+    private bool IsWinner(int x, int y, int z) {
+        int value = board[x, y, z];
+        if (value == 0) { return false; }
+        // Check all directions in 3 dimensions
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    if (dx == 0 && dy == 0 && dz == 0) { continue; } // Skip the current cell
+                    int count = 0;
+                    for (int i = -3; i < 4; i++) {
+                        int nx = x + i * dx;
+                        int ny = y + i * dy;
+                        int nz = z + i * dz;
+                        if (nx >= 0 && nx < 4 &&
+                            ny >= 0 && ny < 4 &&
+                            nz >= 0 && nz < 4 &&
+                            board[nx, ny, nz] == value) { count++; }
+                        else { break; }
+                    }
+                    if (count >= 4) { return true; }
+                }
+            }
+        }
         return false;
     }
 
-    private bool IsBoardFull()
-    {
-        for (int i = 0; i < board.GetLength(0); i++)
-        {
-            for (int j = 0; j < board.GetLength(1); j++)
-            {
-                for (int k = 0; k < board.GetLength(2); k++)
-                {
-                    if (board[i, j, k] == 0)
-                    {
-                        return false;
-                    }
+    private bool IsBoardFull() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 4; k++) {
+                    if (board[i, j, k] == 0) { return false; }
                 }
             }
         }
@@ -153,11 +106,11 @@ class TicTacToe3D {
     private int OffensiveMove()
     {
         // Check all empty cells for potential winning moves
-        for (int x = 0; x < board.GetLength(0); x++)
+        for (int x = 0; x < 4; x++)
         {
-            for (int y = 0; y < board.GetLength(1); y++)
+            for (int y = 0; y < 4; y++)
             {
-                for (int z = 0; z < board.GetLength(2); z++)
+                for (int z = 0; z < 4; z++)
                 {
                     if (board[x, y, z] == 0)
                     {
@@ -181,11 +134,11 @@ class TicTacToe3D {
     private int DefensiveMove()
     {
         // Check all empty cells for potential opponent's winning moves
-        for (int x = 0; x < board.GetLength(0); x++)
+        for (int x = 0; x < 4; x++)
         {
-            for (int y = 0; y < board.GetLength(1); y++)
+            for (int y = 0; y < 4; y++)
             {
-                for (int z = 0; z < board.GetLength(2); z++)
+                for (int z = 0; z < 4; z++)
                 {
                     if (board[x, y, z] == 0)
                     {
@@ -214,9 +167,9 @@ class TicTacToe3D {
         // Choose a random empty cell
         while (true)
         {
-            int x = random.Next(board.GetLength(0));
-            int y = random.Next(board.GetLength(1));
-            int z = random.Next(board.GetLength(2));
+            int x = random.Next(4);
+            int y = random.Next(4);
+            int z = random.Next(4);
             if (board[x, y, z] == 0)
             {
                 return (x << 8) | (y << 4) | z; // Encode the move as a single integer
